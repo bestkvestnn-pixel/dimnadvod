@@ -28,6 +28,9 @@ The normative agent instructions are written in English.
 - If a translation and the English source differ, the English source always wins.
 - Do not maintain independent rule sets in multiple languages.
 - A translation should identify the exact source revision/blob it mirrors so staleness can be detected automatically.
+- User instructions may be given in any language. Their authority does not depend on language.
+- When the user approves a global rule in Russian or another language, preserve its meaning and encode the normative stored rule in English.
+- Do not weaken, reinterpret, or ignore an author decision merely because it was not phrased in English.
 
 ---
 
@@ -854,7 +857,73 @@ The purpose of this protocol is to minimize:
 
 ---
 
-# 25. After every operation
+# 25. Two-repository product architecture
+
+The project has two repository sides with different authority.
+
+## 25.1. Author / canon side
+
+`bestkvestnn-pixel/dimnadvod` is the AUTHOR / CANON / KNOWLEDGE SOURCE.
+
+It owns:
+- authored world facts;
+- entities and stable IDs;
+- chronology and temporal states;
+- stories, scenes, versions;
+- chapters, transitions, slices;
+- source game materials and their metadata;
+- export schemas and availability rules;
+- author-facing knowledge views.
+
+## 25.2. Player / runtime side
+
+`bestkvestnn-pixel/test-app` is the PLAYER / RUNTIME APPLICATION.
+
+It owns:
+- application code;
+- player-facing UI;
+- runtime/session behavior;
+- local progress and answers;
+- caches and generated runtime views.
+
+It may contain generated copies of authored data, but those copies are not canon.
+
+## 25.3. Dependency direction
+
+Authored content dependency is one-way:
+
+```text
+dimnadvod
+  SOURCE / CANON
+      ↓
+controlled incremental export
+      ↓
+test-app
+  GENERATED DATA + RUNTIME/UI
+```
+
+Do not automatically synchronize authored content from `test-app` back into `dimnadvod`.
+
+Application needs may produce a proposal to change the export schema, but a canon/schema change occurs only after explicit author approval on the source side.
+
+## 25.4. Canonical synchronization contract
+
+Before any cross-repository synchronization, read:
+
+1. this root `/AGENTS.md`;
+2. `/sync/AGENTS.md`;
+3. the root `AGENTS.md` of `test-app`;
+4. only the changed local instructions/data required by the delta.
+
+The normative cross-repository protocol lives at:
+
+`bestkvestnn-pixel/dimnadvod/sync/AGENTS.md`
+
+Do not maintain an independent competing synchronization rule set in the application repository.
+
+---
+
+# 26. After every operation
 
 After creating or modifying an entity, the agent must:
 
@@ -871,7 +940,7 @@ After creating or modifying an entity, the agent must:
 
 ---
 
-# 26. Short architecture formula
+# 27. Short architecture formula
 
 > **One world.**
 

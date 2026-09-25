@@ -689,11 +689,11 @@ Do not update a card according to an old rule if the same delta changes the rule
 
 If a local `AGENTS.md` did not change and is already loaded in the current working context, it does not need to be reread for every file in the same operation.
 
-## 24.3. Synchronization between databases starts with comparison
+## 24.3. Cross-repository content delivery starts with comparison
 
-When moving changes between:
-- source and new database;
-- local and remote copy;
+When moving or deriving content between:
+- canonical source and interface projections;
+- local and remote copies;
 - branches;
 - repositories;
 
@@ -857,73 +857,147 @@ The purpose of this protocol is to minimize:
 
 ---
 
-# 25. Two-repository product architecture
+# 25. Derived state and projections must not be duplicated
 
-The project has two repository sides with different authority.
+The most complex information in this project is state over time. Therefore it must be authored once.
 
-## 25.1. Author / canon side
+Do not manually maintain independent Chapter 1 / Chapter 2 copies of:
+- character state;
+- world state;
+- player knowledge;
+- material availability;
+- interpretations;
+- legal status;
 
-`bestkvestnn-pixel/dimnadvod` is the AUTHOR / CANON / KNOWLEDGE SOURCE.
+when those values can be derived from events, temporal states, knowledge changes, availability rules, and the selected slice/query coordinate.
+
+Prefer:
+
+```text
+EVENTS / SCENES
+      ↓
+WORLD STATE
+      ↓
+KNOWLEDGE + AVAILABILITY
+      ↓
+SLICE / QUERY COORDINATE
+      ↓
+DERIVED VIEW
+```
+
+A slice is a query/projection coordinate, not a manually copied database snapshot.
+
+Use temporal wrappers only for properties that actually change. Stable facts such as a birth date should remain simple fields unless history is genuinely required.
+
+Where an event can be the primary owner of a state change, prefer recording the event and its effect rather than independently maintaining the same change in multiple cards.
+
+The interface repository MUST consume derived projections and MUST NOT author a parallel state model.
+
+---
+
+# 26. Paired-repository product architecture
+
+The project has two repositories with different responsibilities, but only one authored content database.
+
+## 26.1. Canonical content repository
+
+[bestkvestnn-pixel/dimnadvod](https://github.com/bestkvestnn-pixel/dimnadvod) is the AUTHOR / CANON / KNOWLEDGE SOURCE.
 
 It owns:
 - authored world facts;
 - entities and stable IDs;
 - chronology and temporal states;
-- stories, scenes, versions;
-- chapters, transitions, slices;
-- source game materials and their metadata;
-- export schemas and availability rules;
-- author-facing knowledge views.
+- events, scenes, processes, and stories;
+- knowledge and interpretations;
+- chapters, transitions, slices, and availability rules;
+- source game materials and source assets;
+- export/projection schemas;
+- author-facing knowledge semantics.
 
-## 25.2. Player / runtime side
+## 26.2. Interface repository
 
-`bestkvestnn-pixel/test-app` is the PLAYER / RUNTIME APPLICATION.
+[bestkvestnn-pixel/test-app](https://github.com/bestkvestnn-pixel/test-app) is the INTERFACE REPOSITORY.
 
-It owns:
+Its root instruction is:
+
+[test-app/AGENTS.md](https://github.com/bestkvestnn-pixel/test-app/blob/main/AGENTS.md)
+
+It may contain:
+- Player App;
+- Author Studio;
 - application code;
-- player-facing UI;
 - runtime/session behavior;
 - local progress and answers;
-- caches and generated runtime views.
+- generated projections/caches;
+- tests and fixtures.
 
-It may contain generated copies of authored data, but those copies are not canon.
+It MUST NOT maintain an independent authored copy of the story database.
 
-## 25.3. Dependency direction
+## 26.3. Content dependency direction
 
-Authored content dependency is one-way:
+Authored content flows one way:
 
 ```text
 dimnadvod
   SOURCE / CANON
       ↓
-controlled incremental export
+versioned derived projection
       ↓
 test-app
-  GENERATED DATA + RUNTIME/UI
+  INTERFACES + RUNTIME
 ```
 
-Do not automatically synchronize authored content from `test-app` back into `dimnadvod`.
+The relationship is not `database A ⇄ database B`.
 
-Application needs may produce a proposal to change the export schema, but a canon/schema change occurs only after explicit author approval on the source side.
+## 26.4. Author Studio writes
 
-## 25.4. Canonical synchronization contract
+An author-facing interface may originate a canonical change, but the write must land directly in `dimnadvod` under this root instruction and the applicable local `AGENTS.md`.
 
-Before any cross-repository synchronization, read:
+Conceptually:
+
+```text
+Author Studio
+      ↓ author command
+apply dimnadvod instructions
+      ↓
+canonical write in dimnadvod
+```
+
+This is not reverse synchronization.
+
+Do not establish authored truth first in an application-owned database and later merge it back.
+
+## 26.5. Canonical content-delivery contract
+
+The normative cross-repository contract is:
+
+[contracts/content-delivery/AGENTS.md](contracts/content-delivery/AGENTS.md)
+
+The legacy path [sync/AGENTS.md](sync/AGENTS.md) is only a compatibility pointer.
+
+Before a cross-repository content update, read:
 
 1. this root `/AGENTS.md`;
-2. `/sync/AGENTS.md`;
-3. the root `AGENTS.md` of `test-app`;
-4. only the changed local instructions/data required by the delta.
+2. `/contracts/content-delivery/AGENTS.md`;
+3. [test-app/AGENTS.md](https://github.com/bestkvestnn-pixel/test-app/blob/main/AGENTS.md);
+4. only changed local instructions/data required by the delta.
 
-The normative cross-repository protocol lives at:
+## 26.6. Paired instruction updates
 
-`bestkvestnn-pixel/dimnadvod/sync/AGENTS.md`
+The paired instruction set is:
+- `dimnadvod/AGENTS.md`;
+- `test-app/AGENTS.md`;
+- `dimnadvod/contracts/content-delivery/AGENTS.md`.
 
-Do not maintain an independent competing synchronization rule set in the application repository.
+If a change affects a shared boundary — repository roles, state ownership, stable IDs across repositories, content delivery, Author Studio canonical writes, content revision locking, or generated/runtime ownership — check all three files in the same operation and update only the affected parts.
+
+Do not make the two roots identical. Shared rules belong in the contract; repository-specific duties belong in each root.
+
+If the three instructions cannot be made consistent during the operation, do not perform cross-repository delivery until the mismatch is resolved.
 
 ---
 
-# 26. After every operation
+# 27. After every operation
 
 After creating or modifying an entity, the agent must:
 
@@ -940,7 +1014,7 @@ After creating or modifying an entity, the agent must:
 
 ---
 
-# 27. Short architecture formula
+# 28. Short architecture formula
 
 > **One world.**
 
@@ -963,3 +1037,7 @@ After creating or modifying an entity, the agent must:
 > **Color is a rendering of a digital property, not data.**
 
 > **A local AGENTS.md explains how to add an element without reading the whole database.**
+
+> **State is authored once and projected, not duplicated by chapter or repository.**
+
+> **dimnadvod is the only authored content database; test-app provides interfaces and runtime.**

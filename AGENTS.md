@@ -1,349 +1,364 @@
-# AGENTS.md — корневая инструкция новой базы «Дым над льдом»
+# AGENTS.md — Root Instructions for the New "Дым над льдом" Story Database
 
-## 0. Назначение
+## 0. Purpose
 
-Этот репозиторий — тестовая реализация нового файлового стандарта сюжетной базы.
+This repository is a test implementation of a new file-based standard for a narrative/story database.
 
-Корневой `AGENTS.md` задаёт **неизменяемые правила всей системы**: как агент понимает мир, сущности, время, главы, переходы, знания, материалы и связи между карточками.
+The root `AGENTS.md` defines the **system-wide invariants**: how agents must understand the world, entities, time, chapters, transitions, knowledge, materials, and links between cards.
 
-Он не должен содержать подробные правила заполнения каждого типа сущности. Такие правила задаются локальными `AGENTS.md` внутри профильных разделов базы.
+It must not contain detailed filling rules for every entity type. Type-specific rules belong in local `AGENTS.md` files inside the relevant sections of the database.
 
-Главная цель архитектуры:
+The primary architectural goal is:
 
-> Любой новый факт, документ, персонаж, сцена или изменение должны быть добавлены корректно без необходимости перечитывать всю базу.
+> Any new fact, document, character, scene, or change must be added correctly without rereading the entire database.
 
-Для этого агент обязан работать через:
-1. корневые правила;
-2. ближайший локальный `AGENTS.md`;
-3. стабильные ID и индекс сущностей;
-4. только те связанные карточки, которые реально нужны для операции.
+To achieve this, an agent must work through:
+1. the root rules;
+2. the nearest applicable local `AGENTS.md`;
+3. stable IDs and the entity index;
+4. only the related cards actually needed for the operation.
 
----
+### 0.1. Language and authority
 
-# 1. Иерархия инструкций
+The normative agent instructions are written in English.
 
-При работе с любым файлом действуют инструкции по цепочке сверху вниз:
-
-1. корневой `/AGENTS.md`;
-2. локальный `AGENTS.md` ближайшего раздела;
-3. более глубокий локальный `AGENTS.md`, если он существует;
-4. шаблон конкретного типа сущности;
-5. сама карточка или материал.
-
-Корневой `AGENTS.md` определяет общие инварианты и не может быть отменён локальной инструкцией.
-
-Локальный `AGENTS.md`:
-- уточняет правила конкретного типа данных;
-- определяет обязательные поля;
-- объясняет, куда записывать новую информацию;
-- объясняет, когда создавать отдельную сущность;
-- задаёт допустимые роли и связи;
-- не должен заново пересказывать глобальную архитектуру.
-
-Если локальная инструкция противоречит корневой — действует корневая.
-
-Если требуется отдельный `CLAUDE.md` или другой адаптер для конкретного инструмента, он должен быть производным от `AGENTS.md` и не создавать независимые правила.
+- `/AGENTS.md` and local files named exactly `AGENTS.md` are normative instruction sources.
+- Russian translations under `/docs/` are human-readable reference copies only.
+- A translated copy MUST NOT be used as an instruction source unless the user explicitly asks to inspect, compare, or update that translation.
+- If a translation and the English source differ, the English source always wins.
+- Do not maintain independent rule sets in multiple languages.
+- A translation should identify the exact source revision/blob it mirrors so staleness can be detected automatically.
 
 ---
 
-# 2. Главный принцип: один мир
+# 1. Instruction hierarchy
 
-В базе существует **одна объективная история мира**.
+When working with any file, instructions apply in this order:
 
-Не создавать отдельные версии реальности для Главы 1, Главы 2, финала, игрока, следствия или автора.
+1. root `/AGENTS.md`;
+2. the nearest local `AGENTS.md` for the relevant section;
+3. a deeper local `AGENTS.md`, if present;
+4. the template for the concrete entity type;
+5. the entity card or material itself.
 
-Прошлое мира не переписывается потому, что позднее появилась новая информация.
+The root `AGENTS.md` defines global invariants and cannot be overridden by a local instruction.
 
-Если факт произошёл 03.09.2025, он остаётся фактом 03.09.2025 во всех дальнейших состояниях базы.
+A local `AGENTS.md`:
+- refines rules for a specific data type;
+- defines required fields;
+- explains where new information belongs;
+- explains when a separate entity must be created;
+- defines allowed roles and relation types;
+- must not restate the entire global architecture.
 
-Позднее могут изменяться:
-- знание о факте;
-- доказанность факта;
-- доступность материала;
-- интерпретация факта;
-- официальная версия;
-- мнение персонажа;
-- мнение игроков.
+If a local instruction conflicts with the root instruction, the root instruction wins.
 
-Но не сам уже произошедший факт.
-
-Ключевая формула:
-
-> **Мир один. Состояния мира меняются во времени. Знание о мире меняется отдельно.**
-
----
-
-# 3. Сущность и карточка
-
-Самостоятельно идентифицируемый элемент мира получает собственную сущность и стабильный ID.
-
-Примеры:
-- персонаж;
-- конкретный автомобиль;
-- место;
-- организация;
-- значимый объект;
-- материал;
-- сцена;
-- событие;
-- процесс;
-- история;
-- версия;
-- глава;
-- переход;
-- срез.
-
-Критерий создания карточки — **самостоятельная идентичность**, а не текущая сюжетная важность.
-
-Если объект может:
-- иметь собственную историю;
-- менять состояние;
-- встречаться в нескольких материалах;
-- участвовать в нескольких историях;
-- получать входящие ссылки;
-
-то предпочтительно создать отдельную сущность.
-
-Не создавать отдельную карточку для каждой бытовой детали, если она не имеет самостоятельной идентичности и не используется повторно.
+If a separate `CLAUDE.md` or another tool-specific adapter is required, it must be derived from `AGENTS.md` and must not create an independent rule set.
 
 ---
 
-# 4. Стабильный ID важнее имени файла
+# 2. Core principle: one world
 
-Каждая управляемая сущность должна иметь:
+The database contains **one objective history of the world**.
+
+Do not create separate realities for Chapter 1, Chapter 2, the finale, the players, the investigation, or the author.
+
+The past is not rewritten because new information appears later.
+
+If a fact happened on 2025-09-03, it remains a fact of 2025-09-03 in every later state of the database.
+
+What may change later:
+- knowledge about the fact;
+- evidentiary status of the fact;
+- material availability;
+- interpretation of the fact;
+- an official version;
+- a character's belief;
+- the players' belief.
+
+The already occurred fact itself does not change.
+
+Key formula:
+
+> **There is one world. World states change over time. Knowledge about the world changes separately.**
+
+---
+
+# 3. Entity and card
+
+A independently identifiable element of the world receives its own entity and stable ID.
+
+Examples:
+- character;
+- specific vehicle;
+- place;
+- organization;
+- significant object;
+- material;
+- scene;
+- event;
+- process;
+- story;
+- version;
+- chapter;
+- transition;
+- slice.
+
+The criterion for creating a card is **independent identity**, not current narrative importance.
+
+If an object can:
+- have its own history;
+- change state;
+- appear in multiple materials;
+- participate in multiple stories;
+- receive incoming links;
+
+then creating a separate entity is preferred.
+
+Do not create a separate card for every incidental detail if it has no independent identity and is not reused.
+
+---
+
+# 4. Stable ID is more important than the file name
+
+Every managed entity must have:
 - `type`;
-- стабильный `id`;
-- отображаемое имя.
+- a stable `id`;
+- a display name.
 
-ID не меняется при:
-- переименовании файла;
-- смене фамилии персонажа;
-- уточнении названия;
-- перемещении карточки;
-- изменении визуального представления.
+The ID does not change when:
+- the file is renamed;
+- a character changes surname;
+- the display name is refined;
+- the card is moved;
+- the visual representation changes.
 
-Машинные связи должны опираться на ID.
+Machine-readable relations must rely on IDs.
 
-Читаемые Markdown/Wikilink-ссылки могут использоваться как навигационный слой, но не должны быть единственным машинным адресом сущности.
-
----
-
-# 5. Один факт — один первичный владелец
-
-Не хранить один и тот же точный факт как независимую истину в нескольких карточках.
-
-Для каждого точного факта должен существовать первичный владелец.
-
-Примеры:
-- точное время кадра камеры принадлежит материалу камеры или связанному событию;
-- дата рождения принадлежит карточке персонажа;
-- регистрационный номер принадлежит карточке автомобиля;
-- содержание признания принадлежит материалу признания;
-- факт убийства принадлежит сцене/событию и объективной истории, а не каждой карточке участника отдельно.
-
-Другие карточки могут:
-- ссылаться на первичный источник;
-- показывать краткое производное представление;
-- получать автоматический backlink.
-
-Если новая информация уже существует как первичный факт, не создавать второй независимый экземпляр — создать связь.
+Readable Markdown/Wikilink links may be used as a navigation layer, but they must not be the only machine address of an entity.
 
 ---
 
-# 6. Связи должны быть типизированы
+# 5. One fact — one primary owner
 
-Связь — это не просто упоминание имени.
+Do not store the same exact fact as an independent truth in multiple cards.
 
-По возможности любая значимая связь должна иметь:
-- источник;
-- тип связи;
-- целевую сущность;
-- при необходимости роль;
-- при необходимости временную область действия.
+Every exact fact should have a primary owner.
 
-Примеры связей:
-- персонаж владеет автомобилем;
-- персонаж изображён на фотографии;
-- персонаж автор письма;
-- персонаж допрашивается;
-- сцена происходит в месте;
-- материал фиксирует сцену;
-- история включает сцену;
-- документ доступен с определённой главы;
-- новая информация переосмысляет старый материал.
+Examples:
+- the exact timestamp of a camera frame belongs to the camera material or a linked event;
+- a birth date belongs to the character card;
+- a registration plate belongs to the vehicle card;
+- the content of a confession belongs to the confession material;
+- the fact of a murder belongs to the scene/event and objective story, not independently to every participant card.
 
-Не придумывать свободные синонимы ролей, если для них существует словарь стандарта.
+Other cards may:
+- link to the primary source;
+- show a short derived view;
+- receive automatic backlinks.
+
+If new information already exists as a primary fact, do not create another independent copy; create a relation.
 
 ---
 
-# 7. Не читать всю базу без необходимости
+# 6. Relations must be typed
 
-Полное чтение базы не является нормальным способом добавления или изменения сущности.
+A relation is more than a name mention.
 
-Перед операцией агент должен:
+Where practical, every meaningful relation should have:
+- a source;
+- a relation type;
+- a target entity;
+- an optional role;
+- an optional validity interval.
 
-1. определить тип изменяемой сущности;
-2. прочитать корневой `AGENTS.md`;
-3. прочитать локальный `AGENTS.md` этого типа;
-4. найти сущность по ID, имени или alias через индекс, если индекс уже существует;
-5. открыть саму сущность;
-6. открыть только необходимые связанные карточки;
-7. при обнаружении сущности другого типа перейти к правилам её локального `AGENTS.md`;
-8. после изменения проверить ссылки и схему.
+Examples:
+- a character owns a vehicle;
+- a character is depicted in a photograph;
+- a character authored a letter;
+- a character is interrogated;
+- a scene happens at a place;
+- a material records a scene;
+- a story includes a scene;
+- a document is available from a specific chapter;
+- new information reinterprets an old material.
 
-Если индекс ещё не реализован, временно использовать поиск по ID/имени в репозитории. После появления индекса полный обход файлов для обычной операции считается неправильным путём.
-
----
-
-# 8. Время: одна календарная шкала мира
-
-Вся история располагается на одной объективной календарной шкале.
-
-На этой шкале могут существовать разные временные характеристики одной сущности или материала.
-
-Не смешивать:
-
-## 8.1. Время мира
-Когда произошло само событие или действовало состояние.
-
-Пример:
-- убийство;
-- владение автомобилем;
-- работа в организации;
-- смерть;
-- изменение юридического статуса.
-
-## 8.2. Время создания/фиксации материала
-Когда появился документ, фотография, запись, письмо, протокол и т. п.
-
-## 8.3. Время знания
-Когда конкретный персонаж, группа, следствие или игроки узнали определённое утверждение.
-
-## 8.4. Игровая доступность
-С какого игрового этапа материал разрешён игрокам.
-
-Эти времена могут не совпадать.
-
-Пример:
-
-> Событие произошло в 2025 году, документ создан в 2026 году, игрок впервые получает его во второй главе.
-
-Это не конфликт.
+Do not invent free-form synonymous role names when the standard already defines a controlled term.
 
 ---
 
-# 9. Состояния сущностей во времени
+# 7. Do not read the entire database unless necessary
 
-Если свойство сущности меняется, не переписывать прошлое значение как будто его никогда не существовало.
+Reading the whole database is not the normal way to add or modify an entity.
 
-Хранить последовательность состояний с временной областью действия.
+Before an operation, the agent must:
 
-Примеры:
-- автомобиль персонажа;
-- место жительства;
-- должность;
-- семейное положение;
-- юридический статус;
-- владение объектом;
-- жизненный статус.
+1. determine the type of the entity being changed;
+2. read the root `AGENTS.md`;
+3. read the local `AGENTS.md` for that type;
+4. find the entity by ID, name, or alias through the index, if the index exists;
+5. open the entity itself;
+6. open only the related cards required for the task;
+7. if an entity of another type is encountered, follow that type's local `AGENTS.md`;
+8. after the change, validate links and schema.
 
-Текущее состояние должно быть вычисляемым из истории состояний для выбранной точки времени.
-
-Если свойство не менялось и не требует истории — не усложнять его временной оболочкой без необходимости.
+If the index is not implemented yet, repository search by ID/name may be used temporarily. Once the index exists, a full file scan for a routine operation is considered the wrong path.
 
 ---
 
-# 10. Знание не равно состоянию мира
+# 8. Time: one calendar timeline for the world
 
-Всегда различать:
+The entire story exists on one objective calendar timeline.
 
-- что произошло;
-- кто это знает;
-- с какого момента знает;
-- на каком основании знает;
-- считает ли это доказанным;
-- что доступно игрокам.
+An entity or material may have several distinct temporal properties on that timeline.
 
-Пример:
+Do not mix them.
 
-> Персонаж погиб в прошлом, но игроки ещё считают его пропавшим.
+## 8.1. World time
 
-Нельзя хранить это как два состояния мира:
-- «в Г1 пропал»;
-- «в Г2 мёртв».
+When the actual event happened or a state was valid.
 
-Правильно:
-- объективное состояние мира: мёртв с конкретной даты;
-- состояние знания игроков: судьба неизвестна до определённого открытия.
+Examples:
+- murder;
+- vehicle ownership;
+- employment;
+- death;
+- legal-status change.
 
-Позднее знание создаёт ссылку на старое событие, а не новую версию прошлого.
+## 8.2. Material creation/recording time
+
+When a document, photograph, recording, letter, protocol, or other material came into existence.
+
+## 8.3. Knowledge time
+
+When a particular character, group, investigation, or the players learned a specific assertion.
+
+## 8.4. Game availability
+
+From which game stage a material is available to players.
+
+These times may differ.
+
+Example:
+
+> An event happened in 2025, a document was created in 2026, and players first receive it in Chapter 2.
+
+This is not a conflict.
 
 ---
 
-# 11. Глава, срез и переход — разные сущности
+# 9. Entity states over time
 
-## 11.1. Срез
+If an entity property changes, do not overwrite the earlier value as if it never existed.
 
-Срез — зафиксированное согласованное состояние базы на входе в период активной работы игроков.
+Store a sequence of states with validity intervals.
 
-Срез отвечает на вопросы:
-- что к этому моменту уже произошло;
-- какие состояния сущностей действуют;
-- какие материалы существуют;
-- какие версии существуют;
-- какие сведения доступны игрокам.
+Examples:
+- a character's vehicle;
+- residence;
+- position/job;
+- marital status;
+- legal status;
+- ownership of an object;
+- life status.
 
-Срез не является копией всей базы. Это вычисляемая проекция одной базы.
+The current value should be derivable from the state history for the selected point in time.
 
-## 11.2. Глава
+If a property never changes and does not require a temporal history, do not wrap it in unnecessary temporal structure.
 
-Глава — **период активной работы игроков с одним входным срезом**.
+---
 
-Внутри главы игроки:
-- читают документы;
-- обсуждают;
-- проверяют версии;
-- открывают доступные материалы;
-- делают выводы;
-- принимают решение.
+# 10. Knowledge is not the same as world state
 
-Длительность реальной партии не обязана соответствовать календарному времени мира.
+Always distinguish:
+- what happened;
+- who knows it;
+- from what moment they know it;
+- on what basis they know it;
+- whether they consider it established;
+- what is available to players.
 
-Игроки могут обсуждать главу один час, несколько вечеров или несколько дней реального времени.
+Example:
 
-Прогресс игроков внутри главы сам по себе не двигает глобальный календарь базы.
+> A character died in the past, while players still believe the character is missing.
 
-Каждая глава должна иметь календарный стартовый якорь мира.
+Do not store this as two world states:
+- "missing in Chapter 1";
+- "dead in Chapter 2".
 
-Может существовать дедлайн/событие, до которого игроки должны зафиксировать решение.
+Correct model:
+- objective world state: dead from a specific date;
+- player knowledge state: fate unknown until a specific discovery.
 
-## 11.3. Переход
+Later knowledge creates a link back to the old event; it does not create a new version of the past.
 
-Переход — участок между двумя главами, в котором:
-- фиксируются последствия завершённой главы;
-- происходят необходимые события мира;
-- появляются новые документы;
-- меняются состояния сущностей;
-- могут меняться официальные версии и юридические статусы;
-- формируется следующий согласованный срез.
+---
 
-Переход может занимать секунды для игроков и дни или недели внутри мира.
+# 11. Chapter, slice, and transition are different entities
 
-Физически переход может быть реализован одной командой:
-> «Откройте конверт №2».
+## 11.1. Slice
 
-При этом внутри конверта игрок получает сразу результат всего прошедшего межглавного периода.
+A slice is a fixed, internally consistent projection of the database at the entry point of a period of active player work.
 
-## 11.4. Новый срез создаётся после перехода
+A slice answers:
+- what has already happened by this point;
+- which entity states are valid;
+- which materials exist;
+- which versions exist;
+- which information is available to players.
 
-Базовая схема:
+A slice is not a copy of the whole database. It is a computed projection of one database.
+
+## 11.2. Chapter
+
+A chapter is a **period of active player work with one input slice**.
+
+During a chapter, players:
+- read documents;
+- discuss;
+- test versions;
+- unlock available materials;
+- draw conclusions;
+- make a decision.
+
+The real duration of a tabletop session does not need to match the world's calendar time.
+
+Players may discuss one chapter for an hour, several evenings, or several real days.
+
+Player progress within a chapter does not by itself advance the database's global calendar.
+
+Every chapter must have a calendar start anchor in world time.
+
+A deadline or world event may exist by which the players must lock their decision.
+
+## 11.3. Transition
+
+A transition is the interval between two chapters in which:
+- the completed chapter's consequences are fixed;
+- required world events happen;
+- new documents appear;
+- entity states change;
+- official versions and legal statuses may change;
+- the next internally consistent slice is formed.
+
+A transition may take seconds for players and days or weeks in the world.
+
+Physically, a transition may be implemented by one instruction:
+
+> "Open envelope No. 2."
+
+The envelope may immediately deliver the result of many events that happened during the between-chapter period.
+
+## 11.4. A new slice is created after a transition
+
+Base model:
 
 ```text
 SLICE N
    ↓
 CHAPTER N
    ↓
-решение игроков
+player decision
    ↓
 TRANSITION N→N+1
    ↓
@@ -352,458 +367,458 @@ SLICE N+1
 CHAPTER N+1
 ```
 
-Внутри главы не создавать новый глобальный срез после каждого открытия.
+Do not create a new global slice after every discovery inside a chapter.
 
-Игровой прогресс внутри главы хранится отдельно от глобального состояния входного среза.
-
----
-
-# 12. Старт главы и последний документ пакета
-
-Старт новой главы должен быть явно датирован.
-
-Для физического стартового пакета/конверта действует правило:
-
-> Дата входного среза главы определяется самой поздней актуальной временной точкой стартового пакета, если автором не установлено иное.
-
-Архивный документ внутри пакета не переносит старт главы в прошлое.
-
-Нужно различать:
-- дату события, о котором говорит документ;
-- дату создания документа;
-- дату его включения в игровой пакет;
-- дату входного среза главы.
-
-Физическое получение набора документов может быть мгновенным для игроков, хотя документы отражают события нескольких дней или недель мира.
+Player progress within a chapter is stored separately from the chapter's input world slice.
 
 ---
 
-# 13. Игровой этап не является цветом
+# 12. Chapter start and the latest current document in the package
 
-Цвет — только визуальное представление машинного признака.
+The start of every new chapter must be explicitly dated.
 
-Никогда не хранить смысл как:
+For a physical starting package/envelope, use this rule:
+
+> The chapter input slice is dated by the latest current temporal point represented by the starting package, unless the author explicitly defines a different anchor.
+
+An archival document inside the package does not move the chapter start into the past.
+
+Distinguish:
+- the date of the event described by a document;
+- the document creation date;
+- the date it is included in the game package;
+- the chapter input-slice date.
+
+Receiving a package may be instantaneous for players even if the package reflects several days or weeks of world events.
+
+---
+
+# 13. Game stage is not a color
+
+Color is only a visual representation of a machine-readable semantic property.
+
+Never store meaning as:
 - `blue`;
 - `red`;
 - `purple`.
 
-Хранить семантический статус, например:
-- доступен с Главы 1;
-- появился в переходе 1→2;
-- впервые доступен в Главе 2;
-- известен ранее, но переосмысляется в Главе 2;
-- авторский слой;
-- скрытый слой.
+Store semantic state instead, for example:
+- available from Chapter 1;
+- appeared during Transition 1→2;
+- first available in Chapter 2;
+- known earlier but reinterpreted in Chapter 2;
+- author-only layer;
+- hidden layer.
 
-Интерфейс, Obsidian CSS или приложение самостоятельно отображают эти признаки цветами.
+The UI, Obsidian CSS, or application may render these properties with colors.
 
-Если визуальная метка существует, должна существовать цифровая причина, по которой её можно восстановить.
-
----
-
-# 14. Материалы не владеют истиной мира
-
-Документ, фотография, газета, допрос или переписка являются носителями информации.
-
-Материал может:
-- фиксировать событие;
-- сообщать утверждение;
-- содержать ошибку;
-- отражать чужую версию;
-- быть неполным;
-- позднее получить новое значение.
-
-Нельзя автоматически считать текст документа объективной истиной мира.
-
-При добавлении материала всегда разделять:
-- что существует объективно;
-- что утверждает материал;
-- кто создал материал;
-- кого он касается;
-- когда он создан;
-- когда доступен;
-- к какой сцене/событию он относится;
-- меняется ли его интерпретация позже.
-
-Подробные правила материалов определяются локальным `AGENTS.md` раздела материалов.
+If a visual marker exists, there must be a digital reason from which that marker can be reproduced.
 
 ---
 
-# 15. Сцена — узел изменения мира
+# 14. Materials do not own world truth
 
-Сцена — ограниченный эпизод, в котором участники своими действиями изменяют состояние мира или знания.
+A document, photograph, newspaper, interrogation, or correspondence is a carrier of information.
 
-Для сцены важны:
-- время или временной интервал;
-- место, если известно;
-- участники;
-- состояние до;
-- действие;
-- состояние после;
-- выходы в другие истории;
-- связанные материалы.
+A material may:
+- record an event;
+- state an assertion;
+- contain an error;
+- reflect someone else's version;
+- be incomplete;
+- gain a new meaning later.
 
-Не создавать сцену для каждого микродействия.
+Do not automatically treat the text of a material as objective world truth.
 
-Самостоятельная сцена нужна, если она:
-- меняет важное состояние;
-- создаёт значимый факт или объект;
-- меняет знание;
-- имеет самостоятельное временное значение;
-- используется несколькими материалами или историями;
-- создаёт причинный выход в другую линию.
+When adding a material, always separate:
+- what objectively exists;
+- what the material claims;
+- who created it;
+- which entities it concerns;
+- when it was created;
+- when it becomes available;
+- which scene/event it relates to;
+- whether its interpretation changes later.
 
-Сцена не обязана «принадлежать» главе. Она существует на шкале мира. Глава только определяет, когда и в каком объёме информация о сцене становится рабочей для игроков.
-
----
-
-# 16. История хранит причинность
-
-Хронология отвечает на вопрос «что и когда произошло».
-
-История отвечает на вопрос «почему одно привело к другому».
-
-Не подменять причинную историю списком дат.
-
-Один персонаж может участвовать в нескольких историях.
-
-Одна сцена может быть точкой пересечения нескольких историй.
-
-Истории должны связываться со сценами, состояниями, персонажами и материалами через ID.
-
-Локальная причинность персонажа важнее его глобальной функции для сюжета.
-
-Персонаж совершает действие потому, что оно имеет смысл внутри его собственной истории, а не потому, что автору требуется улика.
+Detailed material rules belong in the local `AGENTS.md` of the materials section.
 
 ---
 
-# 17. Версии и интерпретации
+# 15. A scene is a world-change node
 
-Ошибочная версия не переписывает факты мира.
+A scene is a bounded episode in which participants change the state of the world or knowledge through their actions.
 
-Она связывает реальные или предполагаемые факты другой причинной схемой.
+Important scene properties:
+- time or time interval;
+- place, if known;
+- participants;
+- state before;
+- action;
+- state after;
+- outputs into other stories;
+- related materials.
 
-Поэтому различать:
-- объективный факт;
-- утверждение;
-- доказанность;
-- официальную версию;
-- версию персонажа;
-- рабочую версию игроков;
-- авторскую истину.
+Do not create a scene for every micro-action.
 
-Если в новой главе старый материал получает другой смысл:
-- не создавать копию материала;
-- не переписывать его прошлое содержание;
-- добавить новую интерпретацию или связь.
+A separate scene is useful when it:
+- changes an important state;
+- creates a significant fact or object;
+- changes knowledge;
+- has independent temporal significance;
+- is used by multiple materials or stories;
+- creates a causal output into another line.
 
----
-
-# 18. Локальные AGENTS.md обязаны отвечать на практические вопросы
-
-Каждый профильный локальный `AGENTS.md` должен объяснять агенту:
-
-1. Когда создавать сущность этого типа?
-2. Какие поля обязательны?
-3. Какие данные хранятся именно здесь?
-4. Какие данные здесь хранить нельзя?
-5. Куда записать новый факт?
-6. Что делать, если факт появился позднее?
-7. Когда изменить существующее состояние, а когда добавить новое?
-8. Какие типы сущностей можно связывать?
-9. Какие роли связей разрешены?
-10. Как искать существующую сущность?
-11. Когда создавать связанную новую сущность?
-12. Что автоматически строится индексом и не должно поддерживаться вручную?
-13. Какие проверки выполнить после изменения?
-
-Локальная инструкция должна позволять выполнить обычную операцию без чтения всей базы.
+A scene does not need to "belong" to a chapter. It exists on the world timeline. A chapter only determines when and to what extent information about that scene becomes usable by players.
 
 ---
 
-# 19. Маршрутизация между типами сущностей
+# 16. Story stores causality
 
-Если при работе с одной карточкой обнаружена самостоятельная сущность другого типа:
+Chronology answers "what happened and when".
 
-1. не описывать её полностью внутри текущей карточки;
-2. найти её ID через индекс;
-3. если карточка существует — поставить ссылку;
-4. если карточки нет — перейти к локальному `AGENTS.md` соответствующего типа и создать сущность;
-5. вернуться в исходную карточку и поставить связь.
+Story answers "why one thing led to another".
 
-Пример:
+Do not replace a causal story with a list of dates.
+
+One character may participate in multiple stories.
+
+One scene may be an intersection point of multiple stories.
+
+Stories should link to scenes, states, characters, and materials through IDs.
+
+A character's local causality is more important than the character's global plot function.
+
+A character acts because the action makes sense inside that character's own story, not because the author needs a clue.
+
+---
+
+# 17. Versions and interpretations
+
+A false or incomplete version does not rewrite world facts.
+
+It connects real or assumed facts using a different causal structure.
+
+Therefore distinguish:
+- objective fact;
+- assertion;
+- evidentiary status;
+- official version;
+- a character's version;
+- players' working version;
+- author truth.
+
+If an old material gains a new meaning in a later chapter:
+- do not create a duplicate material;
+- do not rewrite its earlier content;
+- add a new interpretation or relation.
+
+---
+
+# 18. Local AGENTS.md files must answer practical questions
+
+Every type-specific local `AGENTS.md` must explain:
+
+1. When should an entity of this type be created?
+2. Which fields are required?
+3. Which data belongs here?
+4. Which data must not be stored here?
+5. Where does a new fact go?
+6. What should happen if a fact appears later?
+7. When should an existing state be changed versus a new state appended?
+8. Which entity types may be linked?
+9. Which relation roles are allowed?
+10. How is an existing entity found?
+11. When must a linked entity be created?
+12. What is generated automatically by the index and must not be maintained manually?
+13. Which validations must run after a change?
+
+A local instruction must make routine operations possible without reading the entire database.
+
+---
+
+# 19. Routing between entity types
+
+If work on one card reveals an independently identifiable entity of another type:
+
+1. do not fully describe it inside the current card;
+2. find its ID through the index;
+3. if the card exists, add a relation;
+4. if it does not exist, follow the local `AGENTS.md` for that type and create it;
+5. return to the original card and add the relation.
+
+Example:
 
 ```text
-новый материал
+new material
     ↓
-упомянут автомобиль
+vehicle mentioned
     ↓
-поиск vehicle ID
+search vehicle ID
     ↓
-нет карточки
+card missing
     ↓
-правила раздела «Транспорт»
+follow Vehicle section rules
     ↓
-создание vehicle
+create vehicle
     ↓
-возврат в material
+return to material
     ↓
-ref на vehicle ID
+ref vehicle ID
 ```
 
 ---
 
-# 20. Не выдумывать отсутствующие данные
+# 20. Do not invent missing data
 
-Если обязательное поле неизвестно, не заполнять его догадкой.
+If a required field is unknown, do not fill it with a guess.
 
-Использовать предусмотренный стандартом статус неизвестности или открытого авторского решения.
+Use the standard's explicit unknown/open status.
 
-Различать:
-- факт неизвестен внутри мира;
-- факт известен автору, но скрыт от игроков;
-- автор ещё не принял решение;
-- данные отсутствуют из-за неполной миграции.
+Distinguish:
+- fact unknown inside the world;
+- fact known to the author but hidden from players;
+- author has not decided yet;
+- data missing because migration is incomplete.
 
-Эти состояния не равны друг другу.
-
----
-
-# 21. Конфликты и неопределённости
-
-При обнаружении расхождения агент не должен автоматически «исправлять» нижний источник по собственному предположению.
-
-Нужно:
-1. определить первичного владельца факта;
-2. проверить более приоритетный источник;
-3. классифицировать расхождение;
-4. исправлять только если правило или канон однозначны;
-5. авторскую неопределённость не закрывать автоматически.
-
-Новая архитектура должна позволять отличать:
-- косметическое расхождение;
-- несинхронизированное изменение;
-- структурный конфликт;
-- открытый авторский вопрос.
+These states are not equivalent.
 
 ---
 
-# 22. Источник канона на этапе тестовой миграции
+# 21. Conflicts and uncertainty
 
-Пока новая база не заполнена полностью, этот репозиторий не является самостоятельным источником всех фактов «Дыма над льдом».
+When a discrepancy is found, the agent must not automatically "fix" a lower-priority source based on its own guess.
 
-При тестовой миграции:
-- исходный канон брать из рабочего репозитория `bestkvestnn-pixel/dimnadvodoi`;
-- в новый репозиторий переносить только проверенные данные;
-- не считать отсутствие факта в новой тестовой базе доказательством его отсутствия в каноне;
-- не изменять старый канон ради удобства новой схемы;
-- спорные или устаревшие сведения сначала разрешать по источникам исходного проекта.
+The agent must:
+1. identify the primary owner of the fact;
+2. check the higher-priority source;
+3. classify the discrepancy;
+4. fix it only if the rule or canon is unambiguous;
+5. never close an authorial uncertainty automatically.
 
-После завершения миграции должен быть отдельно установлен момент, когда новая база становится основным источником истины.
-
----
-
-# 23. Тестовые временные якоря «Дыма над льдом»
-
-Для проверки новой модели на текущей игре закреплены рабочие якоря:
-
-## Глава 1
-- старт активной работы игроков: **23.02.2026, 10:00**;
-- игроки должны зафиксировать решение до начала первого суда;
-- внутренняя продолжительность реальной партии не моделируется как течение календаря мира.
-
-## Переход 1→2
-- начало межглавного изменения: **09.03.2026**, начало первого суда;
-- после завершения Главы 1 игроки получают команду открыть следующий физический пакет;
-- пакет представляет результат нескольких событий мира, произошедших в переходе.
-
-## Глава 2
-- входной срез: **21.03.2026**;
-- физический пакет содержит в том числе признание Сергея и Газету №3;
-- Газета №3 является самым поздним актуальным документом стартового набора и датирует вход в новую главу;
-- архивные документы внутри пакета могут относиться к значительно более ранним событиям.
-
-Эти даты являются тестовыми данными конкретной игры, а не универсальным правилом стандарта.
+The architecture must support distinguishing:
+- cosmetic mismatch;
+- unsynchronized change;
+- structural conflict;
+- open authorial question.
 
 ---
 
-# 24. Экономное чтение и инкрементальная синхронизация
+# 22. Canon source during test migration
 
-По умолчанию база должна читаться и синхронизироваться **инкрементально**.
+Until the new database is fully populated, this repository is not the complete source of truth for "Дым над льдом".
 
-Полный обход, полное повторное чтение и массовая перезапись репозитория не являются штатным способом работы.
+During test migration:
+- source canon must be read from `bestkvestnn-pixel/dimnadvodoi`;
+- only verified data should be migrated into the new repository;
+- absence of a fact from the new test database must not be treated as proof that it is absent from canon;
+- do not change old canon merely to fit the new schema;
+- disputed or stale facts must first be resolved against the source project's authority hierarchy.
 
-Главный принцип:
+A separate explicit decision must establish the moment when the new database becomes the primary source of truth.
 
-> **Сначала определить дельту. Затем читать и изменять только то, что входит в дельту или прямо затронуто ею.**
+---
 
-## 24.1. Не перечитывать базу целиком при обычном обновлении
+# 23. Test time anchors for "Дым над льдом"
 
-Если известна последняя синхронизированная ревизия, commit SHA, версия индекса или другой надёжный базовый маркер, агент обязан сначала определить изменения относительно него.
+For testing the new model on the current game, use these working anchors:
 
-Нормальный порядок:
+## Chapter 1
+- active player work starts: **2026-02-23 10:00**;
+- players must lock their decision before the first trial begins;
+- the real duration of the tabletop session is not modeled as world-calendar progression.
 
-1. определить последнюю известную синхронизированную ревизию;
-2. определить текущую ревизию источника;
-3. получить список изменённых, добавленных, удалённых и переименованных файлов;
-4. прочитать только эти файлы;
-5. дополнительно прочитать только те связанные карточки, которые необходимы для проверки ссылок, конфликтов или последствий изменения;
-6. применить изменения;
-7. обновить только затронутые индексы и производные представления;
-8. сохранить новую точку синхронизации.
+## Transition 1→2
+- between-chapter change starts: **2026-03-09**, when the first trial begins;
+- after Chapter 1 is completed, players receive an instruction to open the next physical package;
+- that package represents the result of multiple world events that occurred during the transition.
 
-Не выполнять полный обход всех карточек только для того, чтобы убедиться, что один файл изменился.
+## Chapter 2
+- input slice: **2026-03-21**;
+- the physical package includes, among other things, Sergey's confession and Newspaper No. 3;
+- Newspaper No. 3 is the latest current document in the starting package and dates the entry into the new chapter;
+- archival documents inside the package may describe substantially earlier events.
 
-## 24.2. Инструкции читаются раньше изменённых данных
+These dates are test data for this specific game, not universal rules of the standard.
 
-Если среди изменённых файлов присутствует:
-- корневой `AGENTS.md`;
-- локальный `AGENTS.md`;
-- шаблон типа;
-- схема;
-- словарь ролей;
-- правила индекса;
-- валидатор;
+---
 
-то сначала прочитать изменённые инструкции и только после этого обрабатывать данные в области их действия.
+# 24. Economical reading and incremental synchronization
 
-Нельзя обновлять карточку по старому правилу, если в той же дельте изменилось правило её заполнения.
+By default, the database must be read and synchronized **incrementally**.
 
-Если локальный `AGENTS.md` не изменился и уже известен в текущем рабочем контексте, повторно читать его для каждого файла той же операции не требуется.
+A full repository walk, full reread, or mass rewrite is not the normal operating mode.
 
-## 24.3. Синхронизация между двумя базами начинается со сравнения
+Core principle:
 
-При переносе изменений между:
-- исходной и новой базой;
-- локальной и удалённой копией;
-- двумя ветками;
-- двумя репозиториями;
+> **Determine the delta first. Then read and modify only the delta and what is directly affected by it.**
 
-не сравнивать содержимое всех файлов вручную.
+## 24.1. Do not reread the entire database during a routine update
 
-Сначала использовать наиболее дешёвый надёжный механизм определения дельты:
-- сравнение commit SHA;
-- compare/diff между ревизиями;
+If a last synchronized revision, commit SHA, index version, or another reliable baseline marker is known, the agent must determine changes relative to it first.
+
+Normal sequence:
+
+1. determine the last known synchronized revision;
+2. determine the current source revision;
+3. obtain the list of modified, added, deleted, and renamed files;
+4. read only those files;
+5. additionally read only related cards required to validate links, conflicts, or consequences;
+6. apply changes;
+7. update only affected indexes and derived projections;
+8. save the new synchronization baseline.
+
+Do not walk all cards merely to discover that one file changed.
+
+## 24.2. Read changed instructions before changed data
+
+If the delta contains any of the following:
+- root `AGENTS.md`;
+- local `AGENTS.md`;
+- type template;
+- schema;
+- role dictionary;
+- index rules;
+- validator;
+
+read the changed instructions first, then process data inside their scope.
+
+Do not update a card according to an old rule if the same delta changes the rule governing that card.
+
+If a local `AGENTS.md` did not change and is already loaded in the current working context, it does not need to be reread for every file in the same operation.
+
+## 24.3. Synchronization between databases starts with comparison
+
+When moving changes between:
+- source and new database;
+- local and remote copy;
+- branches;
+- repositories;
+
+do not manually compare every file.
+
+Use the cheapest reliable delta mechanism first:
+- commit SHA comparison;
+- compare/diff between revisions;
 - manifest;
-- индекс хэшей;
-- сохранённое состояние синхронизации.
+- hash index;
+- saved synchronization state.
 
-Только если надёжной базовой точки нет, допускается однократная полная инвентаризация. После неё необходимо сохранить базовый маркер, чтобы следующие синхронизации были инкрементальными.
+Only when no reliable baseline exists may a one-time full inventory be performed. After that inventory, save a baseline marker so future synchronization is incremental.
 
-## 24.4. Обрабатывать только изменённые пути
+## 24.4. Process only changed paths
 
-Для каждого пути из дельты определить его тип:
+For every changed path, classify the operation:
 
-- **added** — новый файл;
-- **modified** — изменён существующий;
-- **deleted** — удалён;
-- **renamed/moved** — перемещён или переименован;
-- **instruction/schema changed** — изменилось правило обработки.
+- **added** — new file;
+- **modified** — existing file changed;
+- **deleted** — file removed;
+- **renamed/moved** — path changed;
+- **instruction/schema changed** — processing rules changed.
 
-После этого применять профильную инструкцию только к соответствующему типу операции.
+Then apply the relevant local instruction only to that operation type.
 
-Не создавать повторно существующие карточки только потому, что они упомянуты в изменённом файле.
+Do not recreate existing cards merely because they are mentioned in a changed file.
 
-Не обновлять соседние карточки вручную, если их представление должно строиться автоматически через backlinks или индекс.
+Do not manually update neighboring cards when backlinks or the index are responsible for derived views.
 
-## 24.5. Перед заменой файла читать правило его замены
+## 24.5. Read replacement rules before replacing a file
 
-Перед изменением существующего файла агент обязан:
+Before modifying an existing file, the agent must:
 
-1. определить, какой локальный `AGENTS.md` действует для пути;
-2. прочитать его, если инструкция ещё не загружена или изменилась;
-3. получить актуальную версию целевого файла;
-4. проверить, что файл не изменился независимо после базовой точки;
-5. только затем выполнить замену.
+1. determine which local `AGENTS.md` applies to the path;
+2. read it if it is not already loaded or if it changed;
+3. fetch the current version of the target file;
+4. verify that the file has not independently changed since the baseline;
+5. only then perform the replacement.
 
-Если исходная и целевая стороны изменили один и тот же файл после последней общей точки, это конфликт синхронизации.
+If both source and target changed the same file after their last common baseline, this is a synchronization conflict.
 
-В таком случае:
-- не перезаписывать одну сторону другой автоматически;
-- прочитать обе версии;
-- определить первичных владельцев изменённых фактов;
-- выполнить осознанное объединение либо зафиксировать конфликт для автора.
+In that case:
+- do not automatically overwrite either side;
+- read both versions;
+- identify the primary owners of changed facts;
+- perform an intentional merge or record the conflict for the author.
 
-## 24.6. Не выполнять запись без реального изменения
+## 24.6. Do not write when there is no real change
 
-Перед записью сравнить новое содержимое с текущим.
+Before writing, compare the proposed content with the current content.
 
-Если содержательно ничего не изменилось:
-- не перезаписывать файл;
-- не менять поле `updated/обновлено`;
-- не создавать пустой commit;
-- не трогать производные данные без необходимости.
+If nothing substantive changed:
+- do not rewrite the file;
+- do not change `updated/обновлено`;
+- do not create an empty commit;
+- do not touch derived data without need.
 
-Форматирование, порядок пробелов или массовое "освежение" metadata сами по себе не являются основанием переписывать всю базу.
+Formatting, whitespace ordering, or mass metadata "refresh" is not sufficient reason to rewrite the database.
 
-## 24.7. Обновлять только затронутые производные данные
+## 24.7. Update only affected derived data
 
-После изменения файла обновлять:
-- запись этого файла в индексе;
-- его исходящие связи;
-- необходимые входящие связи затронутых сущностей;
-- затронутые срезы/проекции;
-- локальные результаты валидатора.
+After a file change, update:
+- that file's index record;
+- its outgoing relations;
+- necessary incoming relations for affected entities;
+- affected slices/projections;
+- local validator results.
 
-Не пересобирать всю базу, если индекс и валидатор поддерживают безопасное частичное обновление.
+Do not rebuild the entire database if the index and validator support safe incremental updates.
 
-Полная пересборка допустима, если:
-- изменена схема индекса;
-- изменена глобальная модель ссылок;
-- изменён корневой стандарт, требующий миграции;
-- повреждено или потеряно состояние индекса;
-- невозможно надёжно определить область влияния;
-- пользователь явно запросил полный аудит.
+A full rebuild is allowed when:
+- the index schema changes;
+- the global relation model changes;
+- the root standard changes in a way that requires migration;
+- index state is damaged or lost;
+- impact scope cannot be determined reliably;
+- the user explicitly requests a full audit.
 
-Даже при полной проверке не переписывать неизменённые файлы.
+Even during a full validation, do not rewrite unchanged files.
 
-## 24.8. Изменение глобального правила не означает автоматическую массовую миграцию
+## 24.8. A global rule change does not automatically mean mass migration
 
-Если изменился корневой или локальный `AGENTS.md`, сначала определить:
-- какие типы сущностей затронуты;
-- какие поля или связи стали невалидны;
-- требуется ли фактическая миграция существующих карточек.
+If the root or a local `AGENTS.md` changes, first determine:
+- which entity types are affected;
+- which fields or relations became invalid;
+- whether existing cards actually require migration.
 
-Не переписывать все файлы только потому, что изменился текст инструкции.
+Do not rewrite every file merely because instruction text changed.
 
-Массовая миграция выполняется только при доказанной необходимости и должна иметь явно определённую область.
+Mass migration is performed only when clearly necessary and must have an explicitly bounded scope.
 
-## 24.9. Работа с бинарными материалами
+## 24.9. Binary materials
 
-Для изображений, PDF, аудио, видео и других крупных файлов:
-- не загружать содержимое повторно, если хэш/версия не изменилась;
-- сначала сравнивать метаданные, SHA или иной идентификатор содержимого;
-- загружать бинарный файл только если он новый, изменён или нужен для конкретной проверки.
+For images, PDFs, audio, video, and other large files:
+- do not download content again if its hash/version did not change;
+- compare metadata, SHA, or another content identifier first;
+- download the binary only when it is new, changed, or needed for a specific validation.
 
-Связанная Markdown-карточка материала может быть обновлена независимо от бинарного файла.
+A linked Markdown material card may be updated independently from the binary itself.
 
-## 24.10. Минимальный контекст чтения после изменения
+## 24.10. Minimal read context after a change
 
-После получения изменённого файла агент читает дополнительные данные только по необходимости.
+After receiving a changed file, read additional data only when necessary.
 
-Обычно достаточно:
-- самого изменённого файла;
-- действующей инструкции его типа;
-- карточек сущностей, на которые добавлены/удалены ссылки;
-- первичного владельца изменённого факта;
-- связанных сцен/материалов, если изменение меняет причинность, время или доступность.
+Usually enough:
+- the changed file itself;
+- the applicable type instruction;
+- entity cards whose links were added or removed;
+- the primary owner of a changed fact;
+- related scenes/materials if the change affects causality, time, or availability.
 
-Не открывать все файлы персонажа, все документы главы или всю хронологию только из-за одного локального изменения, если локальные ссылки и индекс дают достаточный контекст.
+Do not open every character file, every chapter document, or the full chronology because of one local change when links and the index provide enough context.
 
-## 24.11. Состояние синхронизации должно быть воспроизводимым
+## 24.11. Synchronization state must be reproducible
 
-Система синхронизации должна уметь определить:
-- с какой ревизии была выполнена предыдущая синхронизация;
-- до какой ревизии данные уже обработаны;
-- какие файлы были обработаны;
-- были ли конфликты;
-- завершилось ли обновление успешно.
+The synchronization system must be able to determine:
+- which revision the previous synchronization started from;
+- up to which revision data has already been processed;
+- which files were processed;
+- whether conflicts occurred;
+- whether the update completed successfully.
 
-Конкретный формат служебного manifest/sync-state определяется технической реализацией позже, но сам принцип обязателен.
+The concrete manifest/sync-state format will be defined by the technical implementation later, but the principle is mandatory.
 
-После успешной синхронизации новая ревизия становится следующей базовой точкой сравнения.
+After successful synchronization, the new revision becomes the next comparison baseline.
 
-## 24.12. Краткий алгоритм синхронизации
+## 24.12. Short synchronization algorithm
 
 ```text
 KNOWN BASE REVISION
@@ -829,53 +844,53 @@ VALIDATE AFFECTED AREA
 SAVE NEW BASE REVISION
 ```
 
-Цель этого протокола — минимизировать:
-- сетевые запросы;
-- объём загружаемых данных;
-- повторное чтение контекста;
-- ненужные записи;
-- случайные массовые изменения;
-- стоимость и время синхронизации.
+The purpose of this protocol is to minimize:
+- network requests;
+- transferred data volume;
+- repeated context loading;
+- unnecessary writes;
+- accidental mass changes;
+- synchronization cost and time.
 
 ---
 
-# 25. После любой операции
+# 25. After every operation
 
-После создания или изменения сущности агент обязан:
+After creating or modifying an entity, the agent must:
 
-1. проверить обязательные поля локального типа;
-2. проверить уникальность ID;
-3. проверить существование всех ссылочных ID;
-4. проверить временную непротиворечивость;
-5. проверить, не создан ли дубль существующего факта;
-6. проверить, не перепутаны ли истина мира и знание;
-7. проверить игровую доступность;
-8. проверить, не создана ли лишняя копия старого материала вместо новой интерпретации;
-9. обновить индекс и выполнить валидатор, когда они будут реализованы;
-10. сообщить только реальные изменения и обнаруженные проблемы, не придумывая недостающий канон.
+1. validate required fields for the local type;
+2. validate ID uniqueness;
+3. verify all referenced IDs exist;
+4. validate temporal consistency;
+5. verify no duplicate primary fact was created;
+6. verify world truth and knowledge were not confused;
+7. validate game availability;
+8. verify an old material was not duplicated instead of receiving a new interpretation;
+9. update the index and run the validator when those systems exist;
+10. report only real changes and real problems, without inventing missing canon.
 
 ---
 
-# 26. Краткая формула архитектуры
+# 26. Short architecture formula
 
-> **Один мир.**
+> **One world.**
 
-> **Одна календарная шкала.**
+> **One calendar timeline.**
 
-> **Сцены и события изменяют мир.**
+> **Scenes and events change the world.**
 
-> **Состояния фиксируют, что действительно в конкретный период.**
+> **States record what is true during a given period.**
 
-> **Знание меняется отдельно от мира.**
+> **Knowledge changes separately from the world.**
 
-> **Материалы передают знание, но не являются самой истиной.**
+> **Materials carry knowledge but are not world truth itself.**
 
-> **Срез фиксирует согласованное состояние базы.**
+> **A slice is an internally consistent projection of the database.**
 
-> **Глава — время работы игроков с одним входным срезом.**
+> **A chapter is the players' working period with one input slice.**
 
-> **Переход применяет последствия и формирует следующий срез.**
+> **A transition applies consequences and forms the next slice.**
 
-> **Цвет — отображение цифрового признака, а не данные.**
+> **Color is a rendering of a digital property, not data.**
 
-> **Локальный AGENTS.md объясняет, как добавить новый элемент без чтения всей базы.**
+> **A local AGENTS.md explains how to add an element without reading the whole database.**

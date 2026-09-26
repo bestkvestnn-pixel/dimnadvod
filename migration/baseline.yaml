@@ -1,0 +1,292 @@
+# Evidence bookkeeping, not canonical entity facts or a consumed lock.
+format_version: 1
+scope: migration-foundation-test-only
+status: probe_validated_not_migrated
+authority_switch: false
+historical_authority: bestkvestnn-pixel/dimnadvodoi
+previous_migration_baseline: null
+inventory_reason: No migration baseline; one metadata-only tree inventory used; all content reads bounded to pilot
+  entities and necessary instruction/authority dependencies
+completed_migration_revision: null
+consumer_content_lock: null
+repositories:
+  bestkvestnn-pixel/dimnadvod:
+    base_revision: 3cc9cc8f9679bf7b17132618d666e990006734de
+    scope: instructions_and_tree_only_before_foundation
+  bestkvestnn-pixel/test-app:
+    observed_revision: 3d17feb819ceb19ca7a47a3798ef099b4dc88813
+    scope: root_instruction_and_tree_only
+  bestkvestnn-pixel/dimnadvodoi:
+    observed_revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    tree_sha: adaba1a0e9e22b7e55ef5f1e3672dec5b41e6a2d
+    tree_entries: 874
+    tree_truncated: false
+    scope: bounded_probe_reads_only
+  bestkvestnn-pixel/novogram-app:
+    observed_revision: ff892a6d93951980fbbb732bb061f1224bc8ddc9
+    scope: head_metadata_only
+    content_read: false
+instruction_blobs:
+- repository: bestkvestnn-pixel/dimnadvod
+  path: AGENTS.md
+  blob_sha: 9027c38069811909eb1a16df3fc3362714506628
+- repository: bestkvestnn-pixel/dimnadvod
+  path: contracts/content-delivery/AGENTS.md
+  blob_sha: 8545316d1db7353b168400714486898ac6f84476
+- repository: bestkvestnn-pixel/test-app
+  path: AGENTS.md
+  blob_sha: 68d6bf2c507cc22dabc5a993506e0c7ac33a270f
+inspected_historical_paths:
+- path: AGENTS.md
+  blob_sha: 0ed196ac80a11c1b45541829ebcf649d7a50e8fb
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/00 Стандарты/00 Стандарт базы.md
+  blob_sha: 420a165165a6da0be15ecce0493bfdb072ff6636
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/00 Стандарты/01 Персонажи.md
+  blob_sha: 1f163ca7acb1bc454e65c3099e05c9c67311fb5b
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/00 Стандарты/02 Документы.md
+  blob_sha: 683bf18aa462f2135df15e309bc07315d2826802
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/00 Стандарты/03 Ссылки и связи.md
+  blob_sha: d1e2f930e55de63c3fc9435e57232046d31e336f
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/02 Конституция логики/3 Сергей не является ложным подозреваемым.md
+  blob_sha: 42177ae5ae486a153b31d3223c4002fc0c8fca7d
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/02 Конституция логики/9 Тело Вероники является антиразгадкой.md
+  blob_sha: 846b0f12dbad743b02eb7ca10f201b3447eef235
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/02 Конституция логики/Конституция — оглавление.md
+  blob_sha: f46028aa55e1c50d815142b52635dbf3a4e6c476
+  classification: navigation
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/03 Канон/11 Открытые вопросы для доработки.md
+  blob_sha: 29123c9cc4ac57e35a81b95c8bfc64c80d483299
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/03 Канон/2 Закреплённые правила канона.md
+  blob_sha: ca4fd2e2f261c50086559e4d7badebd019d7daba
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/03 Канон/3 Хронология преступлений.md
+  blob_sha: 2936fd7c02ab807b17e0c3b4ac7041cd1f7ea9af
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/03 Канон/7 Структура глав.md
+  blob_sha: 75b3c5c572dab2f4d1f1ab6a949c72ca2c9e23e1
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/03 Канон/Канон — оглавление.md
+  blob_sha: 5bbe1c94c62d93315bdf34d0d1152658f3060870
+  classification: navigation
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/04 Персонажи/Анна Акунина.md
+  blob_sha: 9c8438349378e64aa3a63af19c3226e9062c36d6
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/04 Персонажи/Вероника.md
+  blob_sha: 62257d7bee4711492bb4a46d64be5c3f12d40480
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/04 Персонажи/Сергей Акунин.md
+  blob_sha: 906b42398afb7c9108503bd35181226b02201779
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/05 Автомобили/А316СК.md
+  blob_sha: b7564e987bb24b33a5fff8d96804d219703b0454
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/07 Материалы дела/01 Документы/Фото Сергея с неизвестной.md
+  blob_sha: cd3d7a235c424c183f17080d6bcf477a66477005
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/07 Материалы дела/02 ОМП — Анна/Кадр с камеры наблюдения — приезд Сергея.md
+  blob_sha: a052805600ebb9854f51cb631d5f9cb50e9aaee5
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/07 Материалы дела/07 Признание и прочее/Признание Сергея.md
+  blob_sha: 319da76141901b1e39954b3ae1a15700ffe7a4df
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/07 Материалы дела/Конверт Артура/Морозов/Фотография Артура — экран регистратуры ProЗрения.md
+  blob_sha: 7f626803c71f48b0acb3941b1ade1e27d45bbf23
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/07 Материалы дела/Правило физических фото.md
+  blob_sha: a239c64ce241e68e56c83f04f0436a4908b6d74b
+  classification: primary_source
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/08 AI-агенты/hranitel-kanona.md
+  blob_sha: 1ee597000dfa75eb4f2fd0323528c863de461e02
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/AGENTS.md
+  blob_sha: 0da9cb5e3f733d7fc7a25cae54709f1f1e71db1a
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/CLAUDE.md
+  blob_sha: b7076c06aa47a55f9ed07547ef4def37a21454c5
+  classification: instruction
+  read_scope: full_text
+  status: read_for_probe
+- path: дым/дым над льдом/_Индекс/context_index.json
+  blob_sha: 3241752923b392c091a9378964435c13b7578e97
+  classification: derived_navigation
+  read_scope: metadata and target entity context records only
+  status: read_for_probe
+- path: дым/дым над льдом/assets/улики/img-cctv-01.png
+  blob_sha: 3fe71e5169ea615b1ae393603d02a23754bc92df
+  classification: asset
+  read_scope: tree metadata only; no binary downloaded
+  size_bytes: 2164521
+  status: inventory_only
+evidence_keys:
+  historical-sergey:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/04 Персонажи/Сергей Акунин.md
+    blob_sha: 906b42398afb7c9108503bd35181226b02201779
+  historical-anna:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/04 Персонажи/Анна Акунина.md
+    blob_sha: 9c8438349378e64aa3a63af19c3226e9062c36d6
+  historical-veronika:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/04 Персонажи/Вероника.md
+    blob_sha: 62257d7bee4711492bb4a46d64be5c3f12d40480
+  historical-passat:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/05 Автомобили/А316СК.md
+    blob_sha: b7564e987bb24b33a5fff8d96804d219703b0454
+  historical-confession:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/07 Материалы дела/07 Признание и прочее/Признание Сергея.md
+    blob_sha: 319da76141901b1e39954b3ae1a15700ffe7a4df
+  historical-photo:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/07 Материалы дела/01 Документы/Фото Сергея с неизвестной.md
+    blob_sha: cd3d7a235c424c183f17080d6bcf477a66477005
+  historical-chronology:
+    repository: bestkvestnn-pixel/dimnadvodoi
+    revision: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+    path: дым/дым над льдом/03 Канон/3 Хронология преступлений.md
+    blob_sha: 2936fd7c02ab807b17e0c3b4ac7041cd1f7ea9af
+  canonical-root:
+    repository: bestkvestnn-pixel/dimnadvod
+    revision: 3cc9cc8f9679bf7b17132618d666e990006734de
+    path: AGENTS.md
+    blob_sha: 9027c38069811909eb1a16df3fc3362714506628
+probe:
+  fixture: tests/fixtures/migration-probe.yaml
+  scope: TEST
+  entity_count: 12
+  migrated_source_entities: 0
+  provisional_ids:
+  - vehicle-volkswagen-passat-a316sk
+  - doc-sergey-with-unknown-photo
+  - group-players
+  - event-anna-death
+  - chapter-1
+  - chapter-2
+  - slice-chapter-1
+  - slice-chapter-2
+  scenario: Chapter 2 after a completed transition and delivered confession package; not all possible branches
+  unknown_material_dates:
+  - doc-sergey-confession
+  - doc-sergey-with-unknown-photo
+  unready_assets:
+  - doc-sergey-with-unknown-photo
+  runtime_input: opened_refs is supplied externally for hypothetical test sessions, not stored in SOURCE
+open_issues:
+- id: veronika-death-date
+  class: open_authorial_question
+  status: open
+  evidence_keys:
+  - historical-chronology
+  - historical-veronika
+  - historical-confession
+  handling: Conflicted exact date excluded from probe; no canon changed
+- id: confession-and-verdict-time
+  class: migration_incomplete
+  status: open
+  evidence_keys:
+  - historical-confession
+  - canonical-root
+  handling: Unknown creation/receipt times; court start is not verdict time; author decision only where chronology
+    is unspecified
+- id: branch-knowledge
+  class: open_authorial_question
+  status: open
+  handling: Probe models delivered package scenario; general branching requires author knowledge matrix
+- id: historical-test-anchors
+  class: unsynchronized_change
+  status: bounded_test_override
+  handling: Use root section 23 working anchors only; historical sources unchanged
+- id: planned-photo
+  class: migration_incomplete
+  status: open
+  evidence_keys:
+  - historical-photo
+  handling: Metadata-only TEST sample; missing asset blocks production delivery
+- id: vehicle-registry-details
+  class: migration_incomplete
+  status: deferred
+  evidence_keys:
+  - historical-passat
+  handling: Only corroborated make/model/plate and registration reference; JS-origin technical attributes excluded
+next_batch:
+  compare_from: 1c5f67dec7b4d06d395b2297df9c998a15bb11fa
+  method: changed paths first; changed instructions before affected source; follow only required refs
+  advance_rule: advance per-path reviewed status only after validation; never infer a full migration from this manifest
+validation:
+  scope: TEST foundation only; not production content delivery
+  unit_tests_passed: 18
+  fixture_entities_validated: 12
+  provenance_keys_checked: true
+  repeat_generation: unchanged
+  input_sha256:
+    schemas/foundation.yaml: 5b4dc758d42e8848c79d33933c6dd238034e90a4017111e3f504614184b22f48
+    tests/fixtures/migration-probe.yaml: c26b7f9f9499495a1f31321378e80056073f800c3bfbd1d998c1941df7fc1ba1
+    tools/foundation.py: c324501918110e5efa1b226fee13e7ffa0b28d595ed043cd6402c7dacaf87b34
+    tests/test_foundation.py: 9100d99e8b1e648338f414ee713b6929b45e1b8a7cf6b8af01304fe897df3482
+  production_source_validation: not_applicable_no_source_entities
+  consumer_tests: not_run_no_delivery
+  content_lock_written: false

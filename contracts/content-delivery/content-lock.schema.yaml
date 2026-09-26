@@ -1,0 +1,19 @@
+# Format definition only. This is not a consumed content lock.
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Dimnadvod content lock v1
+type: object
+additionalProperties: false
+required: [source_repository, source_revision, schema_version, package_hash, projection]
+properties:
+  source_repository: {const: bestkvestnn-pixel/dimnadvod}
+  source_revision: {type: string, pattern: '^[0-9a-f]{40}$'}
+  schema_version: {const: 1}
+  package_hash: {type: string, pattern: '^sha256:[0-9a-f]{64}$'}
+  projection:
+    type: object
+    additionalProperties: false
+    required: [kind, slice_ref, observer_ref]
+    properties:
+      kind: {enum: [player, author]}
+      slice_ref: {type: string, pattern: '^slice-[a-z0-9]+(?:-[a-z0-9]+)*$'}
+      observer_ref: {type: string, pattern: '^(char|group)-[a-z0-9]+(?:-[a-z0-9]+)*$'}

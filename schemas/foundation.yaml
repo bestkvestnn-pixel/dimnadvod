@@ -1,0 +1,41 @@
+schema_version: 1
+status: foundation-proposal
+required_entity_fields: [id, type, name]
+id_pattern: '^[a-z]+-[a-z0-9]+(?:-[a-z0-9]+)*$'
+types:
+  character: {prefix: char}
+  vehicle: {prefix: vehicle, legacy_prefixes: [car]}
+  material: {prefix: doc, legacy_prefixes: [material]}
+  event: {prefix: event}
+  group: {prefix: group}
+  chapter: {prefix: chapter}
+  slice: {prefix: slice}
+unknown_statuses: [world_unknown, author_undecided, migration_missing]
+knowledge_statuses: [reported, established, rejected]
+relations:
+  registered_to: {source: [vehicle], target: [character], roles: []}
+  depicts: {source: [material], target: [character, vehicle, group], roles: []}
+  authored_by: {source: [material], target: [character], roles: []}
+  records: {source: [material], target: [event], roles: []}
+  participant: {source: [event], target: [character, group], roles: [actor, victim, witness]}
+  spouse_of: {source: [character], target: [character], roles: []}
+fact_keys:
+  character: [birth_date]
+  vehicle: [make, model, registration_plate]
+  material: [kind]
+  event: []
+  group: []
+  chapter: []
+  slice: []
+state_keys:
+  character: [life_status, legal_status]
+  vehicle: [owner_ref]
+  material: []
+  event: []
+  group: []
+  chapter: []
+  slice: []
+state_values:
+  life_status: [alive, dead]
+  legal_status: [suspect, charged, convicted, acquitted]
+deferred_types: [place, organization, object, social_account, scene, process, story, version, transition]

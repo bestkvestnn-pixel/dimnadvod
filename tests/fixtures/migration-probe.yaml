@@ -1,0 +1,150 @@
+# TEST fixture only. No item below is a migrated SOURCE entity.
+# Stable IDs are preserved where they already exist. New IDs are provisional.
+# Chapter 2 models a successful transition whose package was delivered.
+# Disclosures become player knowledge only when the material is externally marked
+# opened in runtime. Availability alone does not prove that players read it.
+# The exact first-verdict, confession-creation and branch-discovery dates remain open.
+scope: TEST
+schema_version: 1
+entities:
+  - id: char-sergey-akunin
+    type: character
+    name: Сергей Андреевич Акунин
+    facts:
+      birth_date: '1986-02-11'
+    provenance:
+      - source_key: historical-sergey
+
+  - id: char-anna-akunina
+    type: character
+    name: Анна Петровна Акунина
+    facts:
+      birth_date: '1983-05-17'
+    provenance:
+      - source_key: historical-anna
+
+  - id: char-veronika-pronina
+    type: character
+    name: Вероника Романовна Пронина
+    facts:
+      birth_date: '2001-11-29'
+    # Do not copy the conflicted exact death date from the legacy chapter card.
+    provenance:
+      - source_key: historical-veronika
+
+  - id: vehicle-volkswagen-passat-a316sk
+    type: vehicle
+    name: Volkswagen Passat А316СК
+    facts:
+      make: Volkswagen
+      model: Passat
+      registration_plate: А316СК
+    relations:
+      - type: registered_to
+        target_ref: char-sergey-akunin
+    provenance:
+      - source_key: historical-passat
+      - source_key: historical-sergey
+
+  - id: doc-sergey-confession
+    type: material
+    name: Признание Сергея
+    facts:
+      kind: confession
+    created_at:
+      status: migration_missing
+    claims:
+      confession_account: Сергей признаёт убийство Вероники и отрицает убийство Анны.
+    relations:
+      - type: authored_by
+        target_ref: char-sergey-akunin
+    availability:
+      from_chapter_ref: chapter-2
+      audience_ref: group-players
+    disclosures:
+      - observer_ref: group-players
+        assertion:
+          owner_ref: doc-sergey-confession
+          key: claims.confession_account
+        status: reported
+    provenance:
+      - source_key: historical-confession
+
+  - id: doc-sergey-with-unknown-photo
+    type: material
+    name: Фото Сергея с неизвестной
+    facts:
+      kind: photograph
+    created_at:
+      status: migration_missing
+    asset:
+      status: not_created
+    # The primary card explicitly says the image has not been generated.
+    # This models authored availability; production export must still reject
+    # the missing binary. Do not expose the unknown woman's canonical identity.
+    relations:
+      - type: depicts
+        target_ref: char-sergey-akunin
+      # Author identity is explicit in the primary card. This raw relation
+      # must not reach the player projection or identify the unknown woman.
+      - type: depicts
+        target_ref: char-veronika-pronina
+    availability:
+      from_chapter_ref: chapter-1
+      audience_ref: group-players
+    provenance:
+      - source_key: historical-photo
+
+  - id: group-players
+    type: group
+    name: Игроки
+
+  - id: event-anna-death
+    type: event
+    name: Смерть Анны Акуниной
+    at: '2025-09-03'
+    changes:
+      - target_ref: char-anna-akunina
+        key: life_status
+        value: dead
+    relations:
+      - type: participant
+        target_ref: char-anna-akunina
+        role: victim
+    provenance:
+      - source_key: historical-chronology
+      - source_key: historical-anna
+
+  - id: chapter-1
+    type: chapter
+    name: Глава 1
+    ordinal: 1
+    input_slice_ref: slice-chapter-1
+    provenance:
+      - source_key: canonical-root
+
+  - id: chapter-2
+    type: chapter
+    name: Глава 2
+    ordinal: 2
+    input_slice_ref: slice-chapter-2
+    provenance:
+      - source_key: canonical-root
+
+  - id: slice-chapter-1
+    type: slice
+    name: Входной срез главы 1
+    at: '2026-02-23T10:00'
+    observer_ref: group-players
+    chapter_ref: chapter-1
+    provenance:
+      - source_key: canonical-root
+
+  - id: slice-chapter-2
+    type: slice
+    name: Входной срез главы 2
+    at: '2026-03-21'
+    observer_ref: group-players
+    chapter_ref: chapter-2
+    provenance:
+      - source_key: canonical-root
